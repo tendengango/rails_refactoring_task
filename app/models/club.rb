@@ -29,33 +29,36 @@ class Club < ApplicationRecord
   end
 
   def win_on(year)
-    year = Date.new(year, 1, 1)
-    count = 0
-    matches.where(kicked_off_at: year.all_year).each do |match|
-      count += 1 if won?(match)
-    end
-    count
+   count_result_on(year, "win")
   end
 
   def lost_on(year)
-    year = Date.new(year, 1, 1)
-    count = 0
-    matches.where(kicked_off_at: year.all_year).each do |match|
-      count += 1 if lost?(match)
-    end
-    count
+    count_result_on(year, "lost")
   end
 
   def draw_on(year)
-    year = Date.new(year, 1, 1)
-    count = 0
-    matches.where(kicked_off_at: year.all_year).each do |match|
-      count += 1 if draw?(match)
-    end
-    count
+    count_result_on(year, draw)
   end
 
-  def homebase
-    "#{hometown}, #{country}"
-  end
+  
+  def players_average_age
+    (players.sum(&:age) / players.length).to_f
+  end  
+
+  private
+
+ def count_result_on(year, kind)
+    year = Date.new(year, 1, 1)
+
+    count = 0
+    case kind 
+    when "win"
+      matches.where(kicked_off_at: year.all_year).each { |match| count += 1 if won?(match)}
+    when "lost"
+      matches.where(kicked_off_at: year.all_year).each { |match| count += 1 if lost?(match)}
+    when "draw"
+      matches.where(kicked_off_at: year.all_year).each { |match| count += 1 if draw?(match)}
+    end
+    count       
+  end       
 end
