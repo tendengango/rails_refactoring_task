@@ -37,7 +37,7 @@ class Club < ApplicationRecord
   end
 
   def draw_on(year)
-    count_result_on(year, draw)
+    count_result_on(year, "draw")
   end
 
   
